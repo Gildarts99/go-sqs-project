@@ -33,6 +33,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadGateway)
 	}
 
+	// assign an id to the object
 	b.Id = uuid.New().String()
 	fmt.Println(b)
 }

@@ -6,3 +6,11 @@ terraform {
     }
   }
 }
+
+provider "aws" {
+  default_tags {
+    tags = {
+      Project = "GO-SQS-PROJECT"
+    }
+  }
+}
