@@ -1,24 +1,31 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/google/uuid"
+	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
+var queueName string = "go-sqs-queue"
+
+type Server struct {
+	SQS_URL    string
+	SQS_Client *sqs.Client
+}
+
 type body struct {
-	Id      string
+	ID string 
 	Message string `json:"message"`
 }
 
-func SetupServer() {
-	http.HandleFunc("/", handler)
+func (server *Server) SetupServer() {
+	http.HandleFunc("/", server.handler)
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func (server *Server) handler(w http.ResponseWriter, r *http.Request) {
 	// restrict to post request and use a struct to get info
 	if r.Method != http.MethodPost {
 		log.Println("not a valid request method")
@@ -33,7 +40,22 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadGateway)
 	}
 
-	// assign an id to the object
-	b.Id = uuid.New().String()
-	fmt.Println(b)
+	if err != nil {
+		log.Println("error getting sqsurl")
+		http.Error(w, err.Error(), http.StatusBadGateway)
+	}
+
+	resp, err := server.SQS_Client.SendMessage(context.TODO(), &sqs.SendMessageInput{
+		QueueUrl:    &server.SQS_URL,
+		MessageBody: &b.Message,
+	})
+	if err != nil {
+		log.Println("Got error when sending message")
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadGateway)
+	}
+
+	b.ID = *resp.MessageId
+	log.Println("Sent Message: ")
+	json.NewEncoder(w).Encode(b)
 }
