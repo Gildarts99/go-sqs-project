@@ -16,10 +16,10 @@ jobs:
         name: Build and Push Image
         working-directory: ./lambda_function
         uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: false
-          tags: go-sqs-lambda:${{env.GITHUB_SHA}}
+        # with:
+        #   context: .
+        #   push: false
+        #   tags: go-sqs-lambda:${{env.GITHUB_SHA}}
       -
         name: see images
         run: docker image ls 
