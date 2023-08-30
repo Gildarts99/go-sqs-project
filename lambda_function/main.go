@@ -9,7 +9,7 @@ import (
 )
 
 func handler(ctx context.Context, event events.APIGatewayProxyRequest) {
-	fmt.Println(event.Records)
+	fmt.Println(event.Body.Records)
 }
 
 func main() {
