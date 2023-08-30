@@ -29,10 +29,13 @@ jobs:
       - 
         name: auth to docker
         run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 785210909375.dkr.ecr.us-east-1.amazonaws.com
+      # - 
+        # name: Build Image
+        # working-directory: './lambda_function'
+        # run: docker build -t ${{ env.DOCKER_IMAGE_URI }} .
+      # -
+      #   name: Push Image
+      #   run: docker push ${{ env.DOCKER_IMAGE_URI }}
       - 
-        name: Build Image
-        working-directory: './lambda_function'
-        run: docker build -t ${{ env.DOCKER_IMAGE_URI }} .
-      -
-        name: Push Image
-        run: docker push ${{ env.DOCKER_IMAGE_URI }}
+        name: list docker images
+        run: docker image ls
