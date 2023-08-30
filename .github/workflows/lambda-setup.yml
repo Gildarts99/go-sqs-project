@@ -8,6 +8,7 @@ on:
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PAT: ${{ secrets.DOCKER_PAT }}
+  DOCKER_IMAGE_TAG: ${{ secrets.DOCKER_USERNAME }}/go-sqs-lambda:${{ github.sha }}
 
 jobs:
   build_and_push:
@@ -22,7 +23,7 @@ jobs:
       - 
         name: Build Image
         working-directory: './lambda_function'
-        run: docker build -t go-sqs-lambda:${{ github.sha }} .
+        run: docker build -t ${{ env.DOCKER_IMAGE_TAG }} .
       -
         name: see images
-        run: docker push gildarts99/go-sqs-lambda:${{ github.sha }}
+        run: docker push ${{ env.DOCKER_IMAGE_TAG }}
