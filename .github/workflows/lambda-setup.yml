@@ -5,6 +5,10 @@ on:
     branches:
       - 'main'
 
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PAT: ${{ secrets.DOCKER_PAT }}
+
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
@@ -13,9 +17,12 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       - 
-        name: Build and Push Image
+        name: Login to docker
+        run: docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PAT }}
+      - 
+        name: Build Image
         working-directory: './lambda_function'
         run: docker build -t go-sqs-lambda:${{ github.sha }} .
       -
         name: see images
-        run: docker image ls 
+        run: docker push gildarts99/go-sqs-lambda:${{ github.sha }}
