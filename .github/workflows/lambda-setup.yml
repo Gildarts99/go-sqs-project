@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_and_push:
-    # runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
@@ -15,11 +15,7 @@ jobs:
       - 
         name: Build and Push Image
         working-directory: './lambda_function'
-        # uses: docker/build-push-action@v4
-        # with:
-        #   context: .
-        #   push: false
-        #   tags: go-sqs-lambda:${{env.GITHUB_SHA}}
+        run: docker build -t go-sqs-lambda:${{env.GITHUB_SHA}} .
       -
         name: see images
         run: docker image ls 
