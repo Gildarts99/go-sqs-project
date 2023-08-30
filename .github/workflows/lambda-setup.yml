@@ -28,7 +28,7 @@ jobs:
           aws-region: us-east-1
       - 
         name: auth to docker
-        run: aws ecr get-login-password --region region | docker login --username AWS --password-stdin public.ecr.aws/v6i6h5l0
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/v6i6h5l0
       - 
         name: Build Image
         working-directory: './lambda_function'
