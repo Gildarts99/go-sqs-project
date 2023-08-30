@@ -33,6 +33,6 @@ jobs:
         name: Build Image
         working-directory: './lambda_function'
         run: docker build -t ${{ env.DOCKER_IMAGE_URI }} .
-      # -
-      #   name: Push Image
-      #   run: docker push ${{ env.DOCKER_IMAGE_URI }}
+      -
+        name: Push Image
+        run: docker push ${{ env.DOCKER_IMAGE_URI }}
