@@ -8,7 +8,7 @@ on:
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PAT: ${{ secrets.DOCKER_PAT }}
-  DOCKER_IMAGE_TAG: ${{ secrets.DOCKER_USERNAME }}/go-sqs-lambda:${{ github.sha }}
+  DOCKER_IMAGE_URI: public.ecr.aws/v6i6h5l0/go-sqs-lambda:latest
 
 jobs:
   build_and_push:
@@ -18,12 +18,19 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       - 
-        name: Login to docker
-        run: docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PAT }}
+        name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFUALT_REGION }}
+      # - 
+      #   name: Login to Amazon ECR
+      #   uses: aws-actions/amazon-ecr-login@v1
       - 
         name: Build Image
         working-directory: './lambda_function'
-        run: docker build -t ${{ env.DOCKER_IMAGE_TAG }} .
+        run: docker build -t ${{ env.DOCKER_IMAGE_URI }} .
       -
         name: see images
-        run: docker push ${{ env.DOCKER_IMAGE_TAG }}
+        run: docker push ${{ env.DOCKER_IMAGE_URI }}

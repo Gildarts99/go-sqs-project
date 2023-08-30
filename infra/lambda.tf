@@ -1,18 +1,24 @@
-resource "aws_lambda_function" "test_lambda" {
-  # If the file is not in the current working directory you will need to include a
-  # path.module in the filename.
-  filename      = "lambda_function_payload.zip"
-  function_name = "lambda_function_name"
-  role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "index.test"
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
 
-  source_code_hash = data.archive_file.lambda.output_base64sha256
-
-  runtime = "nodejs18.x"
-
-  environment {
-    variables = {
-      foo = "bar"
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
     }
+
+    actions = ["sts:AssumeRole"]
   }
+}
+
+resource "aws_iam_role" "go-sqs-lambda-role" {
+  name               = "go-sqs-lambda-role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+resource "aws_lambda_function" "go-sqs-lambda-function" {
+  image_uri      = "gildarts99/go-sqs-lambda:dd4f7f2deb46cea0814dc09a33fef2be1d62ce14"
+  function_name = "go-sqs-lambda"
+  package_type = "Image"
+  role = aws_iam_role.go-sqs-lambda-role.arn
 }
