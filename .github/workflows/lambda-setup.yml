@@ -27,6 +27,9 @@ jobs:
           role-to-assume: arn:aws:iam::785210909375:role/github-actions-role-go-sqs
           aws-region: us-east-1
       - 
+        name: auth to docker
+        run: aws ecr get-login-password --region region | docker login --username AWS --password-stdin public.ecr.aws/v6i6h5l0
+      - 
         name: Build Image
         working-directory: './lambda_function'
         run: docker build -t ${{ env.DOCKER_IMAGE_URI }} .
