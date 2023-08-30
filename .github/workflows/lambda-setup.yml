@@ -18,15 +18,11 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       - 
-        name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-      # - 
-      #   name: Login to Amazon ECR
-      #   uses: aws-actions/amazon-ecr-login@v1
+          role-to-assume: arn:aws:iam::785210909375:role/github-actions-role-go-sqs
+          aws-region: us-east-1
       - 
         name: Build Image
         working-directory: './lambda_function'
