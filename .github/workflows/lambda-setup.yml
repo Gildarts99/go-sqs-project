@@ -9,6 +9,7 @@ env:
   AWS_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role-go-sqs
   AWS_REGION: us-east-1
   REPOSITORY_URL: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+  REPOSITORY: go-sqs-queue
 
 jobs:
   build_and_push:
@@ -19,7 +20,7 @@ jobs:
     steps:
       -
         name: configure environment variable
-        run: echo "DOCKER_IMAGE_URI=${{ env.REPOSITORY_URL }}/go-sqs-lambda:latest" >> $GITHUB_ENV
+        run: echo "DOCKER_IMAGE_URI=${{ env.REPOSITORY_URL }}/${{ env.REPOSITORY }}:latest" >> $GITHUB_ENV
       -
         name: Checkout
         uses: actions/checkout@v3
