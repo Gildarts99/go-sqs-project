@@ -9,10 +9,10 @@ import (
 )
 
 func handler(ctx context.Context, event events.APIGatewayProxyRequest) {
+	fmt.Println("hello from lambda")
 	fmt.Println(event.Body)
 }
 
 func main() {
-	fmt.Println("hello from lambda")
 	lambda.Start(handler)
 }
