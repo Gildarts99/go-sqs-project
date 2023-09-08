@@ -6,9 +6,10 @@ on:
       - 'main'
 
 env:
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PAT: ${{ secrets.DOCKER_PAT }}
-  DOCKER_IMAGE_URI: public.ecr.aws/v6i6h5l0/go-sqs-lambda:latest
+  AWS_ROLE_ARN: arn:aws:iam::${{ secret.AWS_ACCOUNT_ID }}:role/github-actions-role-go-sqs
+  AWS_REGION: us-east-1
+  REPOSITORY_URL: ${{ secret.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+  DOCKER_IMAGE_URI: ${{ env.REPOSITORY_URL }}/go-sqs-queue/go-sqs-lambda:latest
 
 jobs:
   build_and_push:
@@ -21,15 +22,15 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       - 
-        name: Configure AWS credentials from Test account
+        name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: arn:aws:iam::785210909375:role/github-actions-role-go-sqs
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
           role-session-name: githubActionsSession
-          aws-region: us-east-1
+          aws-region: ${{ env.AWS_REGION }}
       - 
         name: auth to docker
-        run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/v6i6h5l0
+        run: aws ecr get-login-password --region ${{env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.REPOSITORY_URL }}
       - 
         name: Build Image
         working-directory: './lambda_function'
@@ -37,6 +38,3 @@ jobs:
       -
         name: Push Image
         run: docker push ${{ env.DOCKER_IMAGE_URI }}
-      - 
-        name: Echo Hello
-        run: echo "hello"
