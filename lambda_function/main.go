@@ -13,5 +13,6 @@ func handler(ctx context.Context, event events.APIGatewayProxyRequest) {
 }
 
 func main() {
+	fmt.Println("hello from lambda")
 	lambda.Start(handler)
 }
