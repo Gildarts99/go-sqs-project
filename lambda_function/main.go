@@ -7,8 +7,8 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-func handler(ctx context.Context, event events.APIGatewayProxyRequest) {
-	fmt.Println("Body: ", event.Body)
+func handler(ctx context.Context, sqsEvent events.SQSEvent) {
+	fmt.Println("Body: ", sqsEvent.Records)
 }
 
 func main() {
