@@ -10,7 +10,13 @@ resource "aws_cloudwatch_log_group" "example" {
 
 resource "aws_lambda_function" "go-sqs-lambda-function" {
   function_name = var.lambda-function-name
+  architectures = ["x86_64"]
   package_type = "Image"
   image_uri      = "${data.terraform_remote_state.core.outputs.repository_url}:latest"
-  role = aws_iam_role.go-sqs-lambda-cloudwatch-role.arn
+  role = aws_iam_role.go-sqs-lambda-role.arn
+}
+
+resource "aws_lambda_event_source_mapping" "sqs-lambda" {
+  event_source_arn = data.terraform_remote_state.core.outputs.sqs_arn
+  function_name    = aws_lambda_function.go-sqs-lambda-function.arn
 }

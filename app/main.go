@@ -33,7 +33,7 @@ func main() {
 
 	// create a server object
 	server := server.Server{
-		SQS_URL: url,
+		SQS_URL:    url,
 		SQS_Client: sqs_client,
 	}
 	server.SetupServer()

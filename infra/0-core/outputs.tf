@@ -1,5 +1,9 @@
 output "sqs_url" {
-  value = aws_sqs_queue.go_sqs_queue.id
+  value = aws_sqs_queue.go_sqs_queue.url
+}
+
+output "sqs_arn" {
+  value = aws_sqs_queue.go_sqs_queue.arn
 }
 
 output "repository_url" {

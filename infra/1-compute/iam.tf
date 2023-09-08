@@ -1,5 +1,5 @@
-resource "aws_iam_policy" "go-sqs-lambda-cloudwatch" {
-  name        = "go-sqs-lambda-cloudwatch-policy"
+resource "aws_iam_policy" "go-sqs-lambda" {
+  name        = "go-sqs-lambda-policy"
   description = "perrmisions for lambda function to post metrics to cloudwatch"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -8,17 +8,26 @@ resource "aws_iam_policy" "go-sqs-lambda-cloudwatch" {
         Effect   = "Allow"
         Action = [
           "logs:CreateLogGroup",
-            "logs:CreateLogStream",
-            "logs:PutLogEvents",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
         ]
         Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Effect   = "Allow"
+        Action = [
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes",
+          "sqs:ReceiveMessage"
+        ]
+        Resource = data.terraform_remote_state.core.outputs.sqs_arn
       }
     ]
   })
 }
 
-resource "aws_iam_role" "go-sqs-lambda-cloudwatch-role" {
-  name               = "go-sqs-lambda-cloudwatch-role"
+resource "aws_iam_role" "go-sqs-lambda-role" {
+  name               = "go-sqs-lambda-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -33,7 +42,7 @@ resource "aws_iam_role" "go-sqs-lambda-cloudwatch-role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "go-lambda-cloudwatch-policy-attachment" {
-  role       = aws_iam_role.go-sqs-lambda-cloudwatch-role.name
-  policy_arn = aws_iam_policy.go-sqs-lambda-cloudwatch.arn
+resource "aws_iam_role_policy_attachment" "go-lambda-policy-attachment" {
+  role       = aws_iam_role.go-sqs-lambda-role.name
+  policy_arn = aws_iam_policy.go-sqs-lambda.arn
 }

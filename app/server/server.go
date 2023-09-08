@@ -17,7 +17,7 @@ type Server struct {
 }
 
 type body struct {
-	ID string 
+	ID      string
 	Message string `json:"message"`
 }
 
