@@ -40,6 +40,13 @@ resource "aws_iam_policy" "go-sqs-lambda-ecr-policy" {
           "sts:GetServiceBearerToken"
         ]
         Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action = [
+          "lambda:UpdateFunctionCode"
+        ]
+        Resource = "arn:aws:lambda:us-east-1:785210909375:function:go-sqs-lambda"
       }
     ]
   })
