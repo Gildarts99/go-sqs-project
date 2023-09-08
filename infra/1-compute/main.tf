@@ -9,8 +9,8 @@ resource "aws_cloudwatch_log_group" "example" {
 }
 
 resource "aws_lambda_function" "go-sqs-lambda-function" {
-  image_uri      = "${data.terraform_remote_state.core.outputs.repository_url}:latest"
   function_name = var.lambda-function-name
   package_type = "Image"
+  image_uri      = "${data.terraform_remote_state.core.outputs.repository_url}:latest"
   role = aws_iam_role.go-sqs-lambda-cloudwatch-role.arn
 }
