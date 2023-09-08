@@ -13,11 +13,9 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 # setup the role and permissions that our github action will use
-resource "aws_iam_role_policy" "go-sqs-lambda-ecr-policy" {
+resource "aws_iam_policy" "go-sqs-lambda-ecr-policy" {
   name        = "go-sqs-lambda-ecr-policy"
-  role = aws_iam_role.github-actions-role-go-sqs.id
-
-
+  description = "perrmisions for go sqs github action"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -68,4 +66,9 @@ resource "aws_iam_role" "github-actions-role-go-sqs" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "go-sqs-policy-attachment" {
+  role       = aws_iam_role.github-actions-role-go-sqs.name
+  policy_arn = aws_iam_policy.go-sqs-lambda-ecr-policy.arn
 }
