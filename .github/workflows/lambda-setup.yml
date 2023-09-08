@@ -19,7 +19,7 @@ jobs:
     steps:
       -
         name: configure environment variable
-        run: echo "DOCKER_IMAGE_URI=${{ env.REPOSITORY_URL }}/go-sqs-queue/go-sqs-lambda:latest"
+        run: echo "DOCKER_IMAGE_URI=${{ env.REPOSITORY_URL }}/go-sqs-queue/go-sqs-lambda:latest" >> $GITHUB_ENV
       -
         name: Checkout
         uses: actions/checkout@v3
