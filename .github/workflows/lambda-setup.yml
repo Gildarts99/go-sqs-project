@@ -6,9 +6,9 @@ on:
       - 'main'
 
 env:
-  AWS_ROLE_ARN: arn:aws:iam::${{ secret.AWS_ACCOUNT_ID }}:role/github-actions-role-go-sqs
+  AWS_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role-go-sqs
   AWS_REGION: us-east-1
-  REPOSITORY_URL: ${{ secret.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+  REPOSITORY_URL: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
   DOCKER_IMAGE_URI: ${{ env.REPOSITORY_URL }}/go-sqs-queue/go-sqs-lambda:latest
 
 jobs:
