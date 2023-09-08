@@ -59,7 +59,7 @@ resource "aws_iam_role" "github-actions-role-go-sqs" {
         },
         Condition = {
           StringEquals = {
-            "token.actions.githubusercontent.com:sub" = "repo:Gildarts99/go-sqs-projects:ref:refs/heads/main",
+            "token.actions.githubusercontent.com:sub" = "repo:Gildarts99/go-sqs-project:ref:refs/heads/main",
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
         }
