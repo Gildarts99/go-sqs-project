@@ -6,4 +6,8 @@ services:
         - 9000:8080
     volumes:
       - ~/.aws-lambda-rie:/aws-lambda
+      - ~/.aws:/root/.aws
+    environment:
+      - S3_BUCKET=go-sqs-project-bucket
+      - AWS_REGION=us-east-1
     entrypoint: /aws-lambda/aws-lambda-rie ./main

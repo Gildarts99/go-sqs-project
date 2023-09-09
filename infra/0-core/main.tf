@@ -10,7 +10,7 @@ resource "aws_ecr_repository" "go-sqs-queue" {
 }
 
 # create an s3 bucket for our lambda function to push too
-resource "aws_s3_bucket" "example" {
+resource "aws_s3_bucket" "go-sqs-bucket" {
   bucket = "go-sqs-project-bucket"
 
   tags = {

@@ -6,6 +6,8 @@ output "sqs_arn" {
   value = aws_sqs_queue.go_sqs_queue.arn
 }
 
+output "s3_bucket"
+
 output "repository_url" {
   value = aws_ecr_repository.go-sqs-queue.repository_url
 }
