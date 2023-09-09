@@ -44,10 +44,17 @@ jobs:
       #   run: docker push ${{ env.DOCKER_IMAGE_URI }}
       - 
         name: Check if lambda function exist
+        id: check-lambda
         continue-on-error: true
         run: aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} 2> /dev/null
       - 
-        name: Update lambda function
-        run: echo $?
-
-        
+        name: Let the user know that the lambda function does not currently exist
+        if: steps.check-lambda.outcome != 'success'
+        run: echo "No lambda function currently exist to update"
+      - 
+        name: Update lambda function if it exist
+        if: steps.check-lambda.outcome == 'success'
+        run: |
+          echo "Updating lambda function"
+          aws lambda update-function-code --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --image-uri ${{ env.DOCKER_IMAGE_URI }}
+                  
