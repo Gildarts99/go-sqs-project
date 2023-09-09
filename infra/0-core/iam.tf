@@ -44,7 +44,8 @@ resource "aws_iam_policy" "go-sqs-lambda-ecr-policy" {
       {
         Effect   = "Allow"
         Action = [
-          "lambda:UpdateFunctionCode"
+          "lambda:UpdateFunctionCode",
+          "lambda:GetFunction"
         ]
         Resource = "arn:aws:lambda:us-east-1:785210909375:function:go-sqs-lambda"
       }
