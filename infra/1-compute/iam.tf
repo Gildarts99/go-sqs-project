@@ -21,6 +21,13 @@ resource "aws_iam_policy" "go-sqs-lambda" {
           "sqs:ReceiveMessage"
         ]
         Resource = data.terraform_remote_state.core.outputs.sqs_arn
+      },
+      {
+        Effect   = "Allow"
+        Action = [
+          "s3:PutObject",
+        ]
+        Resource = data.terraform_remote_state.core.outputs.s3_bucket_arn
       }
     ]
   })
