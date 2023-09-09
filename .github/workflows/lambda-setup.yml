@@ -35,24 +35,19 @@ jobs:
       - 
         name: auth to docker
         run: aws ecr get-login-password --region ${{env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.REPOSITORY_URL }}
+      # - 
+      #   name: Build Image
+      #   working-directory: './lambda_function'
+      #   run: docker build -t ${{ env.DOCKER_IMAGE_URI }} .
+      # -
+      #   name: Push Image
+      #   run: docker push ${{ env.DOCKER_IMAGE_URI }}
       - 
-        name: Build Image
-        working-directory: './lambda_function'
-        run: docker build -t ${{ env.DOCKER_IMAGE_URI }} .
-      -
-        name: Push Image
-        run: docker push ${{ env.DOCKER_IMAGE_URI }}
-      - 
-        name: update lambda function
+        name: Check if lambda function exist
         continue-on-error: true
-        run: |
-          aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} 2> /dev/null
-
-          if [[ $? -ne 0 ]]; then
-              echo "Lambda function ${{ env.LAMBDA_FUNCTION_NAME }} does not exist currently"
-          else
-              echo "Updating lambda function"
-              aws lambda update-function-code --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --image-uri ${{ env.DOCKER_IMAGE_URI }}
-          fi
+        run: aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} 2> /dev/null
+      - 
+        name: Update lambda function
+        run: echo $?
 
         
