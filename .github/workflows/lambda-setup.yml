@@ -46,7 +46,7 @@ jobs:
         name: Check if lambda function exist
         id: check-lambda
         continue-on-error: true
-        run: aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} 2>&1 /dev/null
+        run: aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
       - 
         name: Let the user know that the lambda function does not currently exist
         if: steps.check-lambda.outcome != 'success'
