@@ -8,7 +8,7 @@ on:
 env:
   AWS_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-role-go-sqs
   AWS_REGION: us-east-1
-  LAMBDA_FUNCTION_NAME: go-sqs-lambda-test
+  LAMBDA_FUNCTION_NAME: go-sqs-lambda
   REPOSITORY_URL: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
   REPOSITORY: go-sqs-queue
 
