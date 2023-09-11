@@ -3,9 +3,20 @@ variable "lambda-function-name" {
   default = "go-sqs-lambda"
 }
 
-resource "aws_cloudwatch_log_group" "example" {
+resource "aws_ssm_parameter" "encryption_key" {
+  name  = "/go-sqs-project/ENCRYPTION_KEY"
+  type  = "SecureString"
+  # must be a 16, 24, or 32 bit string
+  value = "supersecretkeyyy"
+}
+
+resource "aws_cloudwatch_log_group" "lambda-function" {
   name              = "/aws/lambda/${var.lambda-function-name}"
   retention_in_days = 14
+}
+
+resource "aws_secretsmanager_secret" "example" {
+  name = "example"
 }
 
 resource "aws_lambda_function" "go-sqs-lambda-function" {
@@ -17,7 +28,8 @@ resource "aws_lambda_function" "go-sqs-lambda-function" {
 
   environment {
     variables = {
-      S3_BUCKET = data.terraform_remote_state.core.outputs.s3_bucket_name
+      S3_BUCKET = data.terraform_remote_state.core.outputs.s3_bucket_name,
+      ENCRYPTION_KEY_PATH = aws_ssm_parameter.encryption_key.name
     }
   }
 }
@@ -26,3 +38,4 @@ resource "aws_lambda_event_source_mapping" "sqs-lambda" {
   event_source_arn = data.terraform_remote_state.core.outputs.sqs_arn
   function_name    = aws_lambda_function.go-sqs-lambda-function.arn
 }
+

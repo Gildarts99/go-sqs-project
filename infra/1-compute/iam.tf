@@ -31,6 +31,14 @@ resource "aws_iam_policy" "go-sqs-lambda" {
           "${data.terraform_remote_state.core.outputs.s3_bucket_arn}",
           "${data.terraform_remote_state.core.outputs.s3_bucket_arn}/*"
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = aws_ssm_parameter.encryption_key.arn
       }
     ]
   })

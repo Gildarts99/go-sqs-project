@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+// must be key that is 16, 24, or 32 bytes as that is what aes needs
 const secretKey = "supersecretkeyyy"
 const filePath = "./filewithencryptedtext"
 

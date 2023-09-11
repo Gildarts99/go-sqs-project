@@ -10,5 +10,5 @@ services:
     environment:
       - S3_BUCKET=go-sqs-project-bucket
       - AWS_REGION=us-east-1
-      - ENCRYPTION_KEY=supersecretkeyyy
+      - ENCRYPTION_KEY_PATH=/go-sqs-project/ENCRYPTION_KEY
     entrypoint: /aws-lambda/aws-lambda-rie ./main
