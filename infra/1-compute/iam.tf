@@ -35,8 +35,7 @@ resource "aws_iam_policy" "go-sqs-lambda" {
       {
         Effect = "Allow"
         Action = [
-          "secretsmanager:DescribeSecret",
-          "secretsmanager:GetSecretValue"
+          "ssm:GetParameter"
         ]
         Resource = aws_ssm_parameter.encryption_key.arn
       }
