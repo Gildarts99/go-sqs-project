@@ -2,6 +2,10 @@ package main
 
 import (
 	"context"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -9,20 +13,33 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/config"
-
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
-func caesar(r rune, shift int) rune {
-	// Shift character by specified number of places.
-	// ... If beyond range, shift backward or forward.
-	s := int(r) + shift
-	if s > 'z' {
-		return rune(s - 26)
-	} else if s < 'a' {
-		return rune(s + 26)
+func encrypt(plaintext string) []byte {
+	secretKey, exist := os.LookupEnv("ENCRYPTION_KEY")
+	if !exist {
+		log.Fatal("environment variable ENCRYPTION_KEY not set")
 	}
-	return rune(s)
+
+	block, err := aes.NewCipher([]byte(secretKey))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Never use more than 2^32 random nonces with a given key because of the risk of a repeat.
+	nonce := make([]byte, aesgcm.NonceSize())
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		log.Fatal(err)
+	}
+
+	ciphertext := aesgcm.Seal(nonce, nonce, []byte(plaintext), nil)
+	return ciphertext
 }
 
 func handler(ctx context.Context, sqsEvent events.SQSEvent) (events.APIGatewayProxyResponse, error) {
@@ -40,14 +57,12 @@ func handler(ctx context.Context, sqsEvent events.SQSEvent) (events.APIGatewayPr
 
 	// for each record, ceaser cipher it and put it in s3 and a nobject with the path being the message id
 	for _, record := range sqsEvent.Records {
-		ciphered := strings.Map(func(r rune) rune {
-			return caesar(r, 1)
-		}, record.Body)
+		encrypted := encrypt(record.Body)
 
 		_, err := s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
 			Bucket: &bucket,
 			Key:    &record.MessageId,
-			Body:   strings.NewReader(ciphered),
+			Body:   strings.NewReader(string(encrypted)),
 		})
 
 		if err != nil {

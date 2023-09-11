@@ -27,7 +27,10 @@ resource "aws_iam_policy" "go-sqs-lambda" {
         Action = [
           "s3:PutObject",
         ]
-        Resource = data.terraform_remote_state.core.outputs.s3_bucket_arn
+        Resource = [
+          "${data.terraform_remote_state.core.outputs.s3_bucket_arn}",
+          "${data.terraform_remote_state.core.outputs.s3_bucket_arn}/*"
+        ]
       }
     ]
   })
